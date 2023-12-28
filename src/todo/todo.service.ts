@@ -5,7 +5,6 @@ import { CreateItemDto } from './dto/create-item.dto';
 export class TodoService {
   private todoItem: string[] = [];
   createItem(body: CreateItemDto): string {
-    console.log(1, body);
     if (this.todoItem.length > 5) {
       return 'You reached maximum length of store, plz upgrade you subscription to 5$ per month';
     }

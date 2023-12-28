@@ -1,38 +1,55 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
   Post,
   Query,
   Redirect,
+  UseFilters,
 } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
+import { TodoService } from './todo.service';
+import { HttpExceptionFilter } from 'src/Filters/http-exception.filter';
+import { ValidationPipe } from 'src/Pipes/validation.pipe';
 
 @Controller('todo')
+@UseFilters(HttpExceptionFilter)
 export class TodoController {
+  constructor(private todoService: TodoService) {}
   @Post()
-  createItem(@Body() body: CreateItemDto): string {
-    console.log(1, body);
-    if (todoItem.length > 5) {
-      return 'You reached maximum length of store, plz upgrade you subscription to 5$ per month';
-    }
-    // todoItem.push(body.name);
-    return 'Success';
+  createItem(@Body(ValidationPipe) body: CreateItemDto): string {
+    return this.todoService.createItem(body);
   }
 
   @Get()
   @HttpCode(HttpStatus.ACCEPTED)
   findAll(): any[] {
-    return todoItem;
+    return this.todoService.findAll();
+  }
+
+  @Get('/pipe')
+  @HttpCode(HttpStatus.ACCEPTED)
+  findOne(@Query('id', ValidationPipe) id: number): number {
+    return id;
   }
 
   @Get('redirect')
-  @Redirect('https://nestjs.com', 301)
+  @Redirect('https://nestjs.com', HttpStatus.MOVED_PERMANENTLY)
   redirect(@Query('version') version) {
-    if (version && version === '5') {
-      return { url: 'https://docs.nestjs.com/v5/' };
-    }
+    return this.todoService.redirect(version);
+  }
+
+  @Get('/error')
+  error() {
+    // const error = new HttpException('You are pussy!!!', HttpStatus.NOT_FOUND, {
+    //   cause: 'ERROR: [Unknown keyword was passed]',
+    // });
+    const error = new ForbiddenException('FORBIDDEN PUSSY!!!');
+    // const error = new PussyException();
+    throw error;
   }
 }
