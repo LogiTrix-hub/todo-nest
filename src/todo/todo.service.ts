@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateItemDto } from './dto/create-item.dto';
+import { TCreateItem } from './dto/create-item.schema';
 
 @Injectable()
 export class TodoService {
   private todoItem: string[] = [];
-  createItem(body: CreateItemDto): string {
+  createItem(body: TCreateItem): string {
     if (this.todoItem.length > 5) {
       return 'You reached maximum length of store, plz upgrade you subscription to 5$ per month';
     }

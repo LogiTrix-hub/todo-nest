@@ -5,33 +5,51 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  ParseUUIDPipe,
   Post,
   Query,
   Redirect,
   UseFilters,
+  UseGuards,
+  UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
-import { CreateItemDto } from './dto/create-item.dto';
 import { TodoService } from './todo.service';
 import { HttpExceptionFilter } from 'src/Filters/http-exception.filter';
 import { ValidationPipe } from 'src/Pipes/validation.pipe';
+import { ValidationZodPipe } from 'src/Pipes/zod-validation.pipe';
+import { TCreateItem, createItemSchema } from './dto/create-item.schema';
+import { ClassValidatorValidationPipe } from 'src/Pipes/class-validator.pipe';
+import { CreateItemDto } from './dto/create-item.dto';
+import { AuthGuard } from 'src/Guards/auth.guard';
+import { Roles } from 'src/Decorators/roles.decorator';
+import { TimeoutInterceptor } from 'src/Interceptors/timeout.interceptor';
 
 @Controller('todo')
 @UseFilters(HttpExceptionFilter)
+@UsePipes(ClassValidatorValidationPipe)
 export class TodoController {
   constructor(private todoService: TodoService) {}
   @Post()
-  createItem(@Body(ValidationPipe) body: CreateItemDto): string {
+  createTodoItem(@Body() body: CreateItemDto): string {
+    return this.todoService.createItem(body);
+  }
+
+  @Post('zod')
+  @UsePipes(new ValidationZodPipe(createItemSchema))
+  createItem(@Body() body: TCreateItem): string {
     return this.todoService.createItem(body);
   }
 
   @Get()
+  @Roles(['admin'])
   @HttpCode(HttpStatus.ACCEPTED)
-  findAll(): any[] {
+  @UseInterceptors(TimeoutInterceptor)
+  async findAll(): Promise<any[]> {
+    await new Promise((res) => setTimeout(res, 2000));
     return this.todoService.findAll();
   }
 
-  @Get('/pipe')
+  @Get('pipe')
   @HttpCode(HttpStatus.ACCEPTED)
   findOne(@Query('id', ValidationPipe) id: number): number {
     return id;
@@ -43,7 +61,7 @@ export class TodoController {
     return this.todoService.redirect(version);
   }
 
-  @Get('/error')
+  @Get('error')
   error() {
     // const error = new HttpException('You are pussy!!!', HttpStatus.NOT_FOUND, {
     //   cause: 'ERROR: [Unknown keyword was passed]',
