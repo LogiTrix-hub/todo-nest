@@ -9,5 +9,5 @@ export class CreateItemDto {
   checked: boolean;
 
   @IsUUID()
-  id: string;
+  todoId: string;
 }
