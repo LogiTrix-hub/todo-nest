@@ -1,8 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { TodoModule } from './todo/todo.module';
+import { TodoModule } from './modules/todo/todo.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [TodoModule],
+  imports: [TodoModule, AuthModule, UserModule],
   controllers: [],
   providers: [],
 })
