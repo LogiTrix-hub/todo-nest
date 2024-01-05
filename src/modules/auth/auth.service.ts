@@ -15,7 +15,15 @@ export class AuthService {
     if (user?.password !== body.password) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.id, email: user.email, id: user.id };
+    const payload = { ...user, sub: user.id };
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async signUp(body: AuthenticationDto) {
+    const user = await this.userService.createUser(body);
+    const payload = { ...user, sub: user.id };
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };

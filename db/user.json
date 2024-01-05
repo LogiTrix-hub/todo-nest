@@ -1,12 +1,1 @@
-[ 
-  {
-    "id": "a20641c0-c29c-4b08-b56a-51d191f64109",
-    "email": "Admin@gmail.com",
-    "password": "adminadmin"
-  },
-  {
-    "id": "1034bfe3-30c2-4c3a-959f-2ca75308c0b8",
-    "email": "Yevhen@gmail.com",
-    "password": "111998"
-  }
-]
+[{"id":"a20641c0-c29c-4b08-b56a-51d191f64109","email":"Admin@gmail.com","password":"adminadmin"},{"id":"1034bfe3-30c2-4c3a-959f-2ca75308c0b8","email":"Yevhen@gmail.com","password":"111998"},{"email":"test@signup.com","password":"123123123","id":"382211dc-ba88-4224-bf5d-821579219d98"}]

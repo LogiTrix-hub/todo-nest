@@ -36,7 +36,7 @@ export class TodoController {
     @Param('todoId') todoId: string,
     @User() user,
   ) {
-    return await this.todoService.createTodoItem(todoId, data, { id: user.id });
+    return await this.todoService.createTodoItem(todoId, data, user);
   }
 
   @Patch(':todoId/item/:itemId')
@@ -48,9 +48,7 @@ export class TodoController {
     @Param('itemId') itemId: string,
     @User() user,
   ) {
-    return await this.todoService.updateTodoItem(todoId, itemId, data, {
-      id: user.id,
-    });
+    return await this.todoService.updateTodoItem(todoId, itemId, data, user);
   }
 
   @Delete(':todoId/item/:itemId')
@@ -61,9 +59,7 @@ export class TodoController {
     @Param('itemId') itemId: string,
     @User() user,
   ) {
-    return await this.todoService.deleteTodoItem(todoId, itemId, {
-      id: user.id,
-    });
+    return await this.todoService.deleteTodoItem(todoId, itemId, user);
   }
 
   @Post()

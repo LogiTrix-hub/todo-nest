@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { resolve } from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import { FSService } from 'src/services/fsService';
 import { UserDto } from 'src/modules/user/dto/response/user.dto';
 
@@ -26,5 +27,24 @@ export class UserRepository {
     ) as UserDto[];
 
     return users.find((i) => i.email.toLowerCase() === email.toLowerCase());
+  }
+
+  async createUser(body: Omit<UserDto, 'id'>) {
+    const user = await this.getOneUserByEmail(body.email);
+    if (user) {
+      throw new BadRequestException('User with this email already exist');
+    }
+    try {
+      const data = await this.getAllUsers();
+      const newUser = {
+        ...body,
+        id: uuidv4(),
+      };
+      data.push(newUser);
+      await this.fsService.writeFile(resolve(PATH_TO_DB), JSON.stringify(data));
+      return newUser;
+    } catch (err) {
+      throw new BadRequestException();
+    }
   }
 }

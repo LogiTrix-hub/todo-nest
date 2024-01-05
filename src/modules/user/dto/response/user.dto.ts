@@ -14,7 +14,7 @@ export class UserDto {
   })
   @IsNotEmpty()
   @IsEmail()
-  email?: string;
+  email: string;
 
   @ApiProperty({
     type: String,

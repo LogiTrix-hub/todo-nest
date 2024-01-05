@@ -29,6 +29,13 @@ export class AuthController {
     return this.authService.signIn(body);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('signup')
+  @ApiOperation({ summary: 'Sign up authentication' })
+  signUp(@Body() body: AuthenticationDto) {
+    return this.authService.signUp(body);
+  }
+
   @Get('profile')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get authenticated user' })
